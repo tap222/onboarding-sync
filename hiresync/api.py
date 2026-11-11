@@ -15,7 +15,7 @@ from strawberry.fastapi import GraphQLRouter
 
 from . import webhooks
 from .app import HireSync, IngestError
-from .auth import AuthError, authenticate
+from .auth import ANONYMOUS, AuthError, authenticate
 from .graphql_schema import schema
 from .store import ConcurrencyError
 
@@ -34,10 +34,15 @@ async def lifespan(_: FastAPI):
 
 
 async def graphql_context(request: Request) -> dict:
-    try:
-        principal = authenticate(request.headers.get("authorization"))
-    except AuthError as exc:
-        raise HTTPException(401, str(exc), headers={"WWW-Authenticate": "Bearer"}) from exc
+    auth_header = request.headers.get("authorization")
+    if not auth_header and request.method == "GET":
+        # Allow loading the GraphiQL playground in browser without throwing 401
+        principal = ANONYMOUS
+    else:
+        try:
+            principal = authenticate(auth_header)
+        except AuthError as exc:
+            raise HTTPException(401, str(exc), headers={"WWW-Authenticate": "Bearer"}) from exc
     return {"app": app_state, "principal": principal}
 
 
