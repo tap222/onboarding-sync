@@ -11,11 +11,13 @@ from contextlib import asynccontextmanager
 from typing import Optional
 
 from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi.responses import RedirectResponse
 from strawberry.fastapi import GraphQLRouter
 
 from . import webhooks
 from .app import HireSync, IngestError
 from .auth import ANONYMOUS, AuthError, authenticate
+from .demo_ui import router as demo_router
 from .graphql_schema import schema
 from .store import ConcurrencyError
 
@@ -48,6 +50,7 @@ async def graphql_context(request: Request) -> dict:
 
 api = FastAPI(title="HireSync", lifespan=lifespan)
 api.include_router(GraphQLRouter(schema, context_getter=graphql_context), prefix="/graphql")
+api.include_router(demo_router)
 
 
 def ashby_signature(body: bytes, ts: int | None = None) -> str:
@@ -75,13 +78,7 @@ async def ashby_webhook(request: Request, idempotency_key: str = Header(..., ali
 
 @api.get("/")
 async def root():
-    return {
-        "service": "HireSync",
-        "docs": "/docs",
-        "health": "/healthz",
-        "graphql": "/graphql",
-        "auth_required": "GraphQL endpoints require Bearer JWT (Okta / dev-token)"
-    }
+    return RedirectResponse(url="/demo")
 
 
 @api.get("/healthz")
