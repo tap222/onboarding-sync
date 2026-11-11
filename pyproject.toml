@@ -1,0 +1,30 @@
+[project]
+name = "hiresync"
+version = "0.2.0"
+description = "Change propagation with cross-system validation for new-hire onboarding (prototype)"
+requires-python = ">=3.11"
+dependencies = [
+  "anthropic>=2.7",
+  "pydantic[email]>=2.7",
+  "strawberry-graphql>=0.240",
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.30",
+  "mcp>=2.3",
+  "pyjwt>=2.9",
+  "usearch>=2.15",
+  "numpy>=1.26",
+  "opentelemetry-api>=1.27",
+  "opentelemetry-sdk>=1.27",
+]
+
+[project.optional-dependencies]
+# Not needed by default: the DB outbox is the queue and the DB holds idempotency keys.
+kafka = ["aiokafka>=0.11"]
+redis = ["redis>=5.0"]
+otlp = ["opentelemetry-exporter-otlp-proto-http>=1.27"]  # set OTEL_EXPORTER_OTLP_ENDPOINT to export
+dev = ["pytest>=8", "pytest-asyncio>=0.23", "httpx>=0.27", "fakeredis>=2.23", "redis>=5.0"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+pythonpath = ["tests", "."]

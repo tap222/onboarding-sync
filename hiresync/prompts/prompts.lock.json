@@ -1,0 +1,12 @@
+{
+  "extraction": {
+    "v1": "7df463454deacc6dc97656f01f39cec6700a4f6ad03448460a82cce6bee51dd5"
+  },
+  "judge": {
+    "v1": "d56465c80201d4de466f6a1897ebb185653eb44b49a32379fcdccd379df3e455"
+  },
+  "triage": {
+    "v1": "f07d8f6d61d8cd19f09ee723c7d304edb8bb5718ed8fba3e8be132a34dc45a4f",
+    "v2": "bb5eb4360a8dab0aa387e5fb67112cf444cbfc7b0a3b821c18bacaffe1e8e5a7"
+  }
+}
