@@ -68,6 +68,17 @@ async def ashby_webhook(request: Request, idempotency_key: str = Header(..., ali
         raise HTTPException(409, str(exc)) from exc
 
 
+@api.get("/")
+async def root():
+    return {
+        "service": "HireSync",
+        "docs": "/docs",
+        "health": "/healthz",
+        "graphql": "/graphql",
+        "auth_required": "GraphQL endpoints require Bearer JWT (Okta / dev-token)"
+    }
+
+
 @api.get("/healthz")
 async def healthz():
     return {"ok": True}
